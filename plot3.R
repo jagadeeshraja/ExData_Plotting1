@@ -1,0 +1,18 @@
+library(dplyr)
+data <- read.table(file.choose(),header = TRUE, sep=";")
+data$DateTime <- as.POSIXct(paste(data$Date, data$Time), format="%d/%m/%Y %H:%M:%S")
+data$DateTime <- as.Date(data$DateTime, format = "%Y-%m-%d %H:%M:%S")
+data$Date <- as.Date(data$Date, "%d/%m/%Y")
+data3 <- filter(data, Date == "2007-02-01" | Date == "2007-02-02")
+
+data3$Sub_metering_1 <- as.numeric(as.character(data3$Sub_metering_1))
+data3$Sub_metering_2 <- as.numeric(as.character(data3$Sub_metering_2))
+data3$Sub_metering_3 <- as.numeric(as.character(data3$Sub_metering_3))
+data3$Voltage <- as.numeric(as.character(data3$Voltage))
+
+png(file="plot3.png",width = 480, height = 480, units = "px")
+plot(data3$DateTime,data3$Sub_metering_1, type="l", ylab="Energy sub metering", xlab="")
+lines(data3$DateTime,data3$Sub_metering_2,col="red")
+lines(data3$DateTime,data3$Sub_metering_3,col="blue")
+legend("topright", lty = c(1, 1, 1), col= c("black", "red", "blue"), legend= c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"),bg = "transparent", box.col = "transparent")
+dev.off()
